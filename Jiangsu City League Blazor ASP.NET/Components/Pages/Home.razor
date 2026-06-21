@@ -1,0 +1,222 @@
+@page "/"
+@inject LeagueService LeagueService
+
+<PageTitle>苏超联赛 - 首页</PageTitle>
+
+<div class="jumbotron bg-gradient-to-r from-blue-600 to-purple-600 text-white py-6 mb-6">
+    <div class="container">
+        <h1 class="display-4 font-bold">2026 江苏省城市足球联赛</h1>
+        <p class="lead mt-2">江苏人自己的足球盛宴 · 全省13城激情对决</p>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <span class="badge bg-white text-dark px-4 py-2">第10周</span>
+            <span class="badge bg-white text-dark px-4 py-2">半程关口</span>
+            <span class="badge bg-white text-dark px-4 py-2">13支球队</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-8">
+                <div class="card-header bg-gradient-to-r from-green-500 to-teal-500 text-white py-3">
+                    <h2 class="h4 font-bold">🏆 积分榜榜首</h2>
+                </div>
+                <div class="card-body py-4">
+                    @if (standings.Any())
+                    {
+                        <div class="row align-items-center g-4">
+                            <div class="col-4 col-md-3 text-center">
+                                <div class="text-6xl font-bold text-green-600">@standings[0].Rank</div>
+                            </div>
+                            <div class="col-8 col-md-6">
+                                <h3 class="h3 font-bold" style="color: @standings[0].Team.ColorPrimary;">@standings[0].Team.Name</h3>
+                                <p class="text-muted mt-1">@standings[0].Team.Coach</p>
+                                <p class="text-sm mt-2">@standings[0].Team.Description</p>
+                            </div>
+                            <div class="col-12 col-md-3 text-center mt-4 mt-md-0">
+                                <div class="text-4xl font-bold text-green-600">@standings[0].Points</div>
+                                <div class="text-sm text-muted mt-1">积分</div>
+                                <div class="text-xs mt-2">@standings[0].Won 胜 @standings[0].Drawn 平 @standings[0].Lost 负</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card mb-8">
+                <div class="card-header bg-gradient-to-r from-orange-500 to-red-500 text-white py-3">
+                    <h2 class="h4 font-bold">⚽ 本周焦点战</h2>
+                </div>
+                <div class="card-body py-4">
+                    @if (weeklyMatches.Any())
+                    {
+                        <div class="space-y-4">
+                            @foreach (var match in weeklyMatches.Take(4))
+                            {
+                                <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="row align-items-center g-2">
+                                        <div class="col-4 col-md-1 text-center">
+                                            <span class="badge bg-secondary">@match.Round</span>
+                                        </div>
+                                        <div class="col-4 col-md-2 text-center">
+                                            <div class="font-bold" style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</div>
+                                        </div>
+                                        <div class="col-4 col-md-2 text-center">
+                                            <div class="text-2xl font-bold">
+                                                @(match.Status == MatchStatus.Completed ? $"{match.HomeScore} - {match.AwayScore}" : "VS")
+                                            </div>
+                                        </div>
+                                        <div class="col-4 col-md-2 text-center mt-2 mt-md-0">
+                                            <div class="font-bold" style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</div>
+                                        </div>
+                                        <div class="col-5 col-md-3 text-center mt-2 mt-md-0">
+                                            <div class="text-sm">@match.Date.ToShortDateString()</div>
+                                            <div class="text-sm">@match.Time</div>
+                                        </div>
+                                        <div class="col-3 col-md-2 text-center mt-2 mt-md-0">
+                                            <span class="badge @(match.Status == MatchStatus.Upcoming ? "bg-blue-500" : "bg-gray-500") text-white">
+                                                @(match.Status == MatchStatus.Upcoming ? "即将开赛" : "已结束")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted">暂无本周比赛</p>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3">
+                    <h2 class="h4 font-bold">📰 最新资讯</h2>
+                </div>
+                <div class="card-body py-4">
+                    @if (news.Any())
+                    {
+                        <div class="space-y-5">
+                            @foreach (var item in news.Take(3))
+                            {
+                                <div class="row g-4">
+                                    <div class="col-12 col-md-4">
+                                        <img src="@item.ImageUrl" class="img-fluid rounded-lg" alt="@item.Title" onerror="this.style.display='none'" />
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <span class="badge bg-gray-200 text-gray-800">@item.Category</span>
+                                        <h3 class="h5 font-bold mt-2">@item.Title</h3>
+                                        <p class="text-muted text-sm mt-2">@item.Summary</p>
+                                        <p class="text-xs text-muted mt-2">@item.PublishDate.ToShortDateString()</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-8">
+                <div class="card-header bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3">
+                    <h2 class="h4 font-bold">🥇 射手榜</h2>
+                </div>
+                <div class="card-body py-4">
+                    @if (topScorers.Any())
+                    {
+                        <div class="space-y-3">
+                            @foreach (var scorer in topScorers.Take(5))
+                            {
+                                <div class="row align-items-center py-1">
+                                    <div class="col-2 text-center">
+                                        <span class="font-bold text-lg">@(topScorers.IndexOf(scorer) + 1)</span>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="font-bold text-sm">@scorer.Player.Name</div>
+                                        <div class="text-xs text-muted">@scorer.Team.ShortName · @scorer.Player.Position</div>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        <span class="badge bg-yellow-500 text-white font-bold">@scorer.Goals</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card mb-8">
+                <div class="card-header bg-gradient-to-r from-red-500 to-pink-500 text-white py-3">
+                    <h2 class="h4 font-bold">📊 积分榜TOP5</h2>
+                </div>
+                <div class="card-body py-4">
+                    @if (standings.Any())
+                    {
+                        <div class="space-y-3">
+                            @foreach (var standing in standings.Take(5))
+                            {
+                                <div class="row align-items-center p-3 rounded-lg" 
+                                     style="@(standing.Rank == 1 ? "background-color: #fff3cd;" : "")">
+                                    <div class="col-1 text-center font-bold">@standing.Rank</div>
+                                    <div class="col-5">
+                                        <div class="font-bold text-sm" style="color: @standing.Team.ColorPrimary;">@standing.Team.ShortName</div>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        <div class="font-bold text-sm">@standing.Points</div>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="text-xs">@standing.GoalsFor:@standing.GoalsAgainst</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3">
+                    <h2 class="h4 font-bold">🏟️ 赛事数据</h2>
+                </div>
+                <div class="card-body py-4">
+                    <div class="row text-center g-4">
+                        <div class="col-6">
+                            <div class="text-3xl font-bold text-blue-600">13</div>
+                            <div class="text-sm text-muted mt-1">参赛球队</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-3xl font-bold text-blue-600">91</div>
+                            <div class="text-sm text-muted mt-1">赛事场次</div>
+                        </div>
+                        <div class="col-6 mt-4">
+                            <div class="text-3xl font-bold text-blue-600">3万+</div>
+                            <div class="text-sm text-muted mt-1">场均观众</div>
+                        </div>
+                        <div class="col-6 mt-4">
+                            <div class="text-3xl font-bold text-blue-600">57%</div>
+                            <div class="text-sm text-muted mt-1">省外用户</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Standing> standings = [];
+    private List<Match> weeklyMatches = [];
+    private List<News> news = [];
+    private List<TopScorer> topScorers = [];
+
+    protected override void OnInitialized()
+    {
+        standings = LeagueService.GetStandings();
+        weeklyMatches = LeagueService.GetWeeklyMatches(DateTime.Now);
+        news = LeagueService.GetNews();
+        topScorers = LeagueService.GetTopScorers();
+    }
+}

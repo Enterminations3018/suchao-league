@@ -1,0 +1,189 @@
+@page "/standings"
+@inject LeagueService LeagueService
+@using Jiangsu_City_League_Blazor_ASP.NET.Models
+
+<PageTitle>苏超联赛 - 积分榜</PageTitle>
+
+<div class="container mt-6">
+    <h1 class="display-4 font-bold text-center mb-6">📊 2026苏超积分榜</h1>
+    
+    <!-- Mobile Card View -->
+    <div class="d-block d-md-none mb-4">
+        @foreach (var standing in standings)
+        {
+            <div class="card mb-2 @(standing.Rank <= 3 ? "border-warning" : "")">
+                <div class="card-body p-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-2xl">@(standing.Rank == 1 ? "🥇" : standing.Rank == 2 ? "🥈" : standing.Rank == 3 ? "🥉" : $"{standing.Rank}")</span>
+                        <div class="w-8 h-8 rounded-circle d-flex align-items-center justify-content-center text-white text-sm font-bold flex-shrink-0"
+                             style="background-color: @standing.Team.ColorPrimary;">
+                            @standing.Team.ShortName[0]
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="font-bold text-truncate" style="color: @standing.Team.ColorPrimary;">@standing.Team.Name</div>
+                            <div class="text-xs text-muted">@standing.Team.City</div>
+                        </div>
+                        <div class="text-end flex-shrink-0">
+                            <div class="text-2xl font-bold @(standing.Rank <= 3 ? "text-warning" : "text-primary")">@standing.Points</div>
+                            <div class="text-xs text-muted">分</div>
+                        </div>
+                    </div>
+                    <div class="row text-center mt-2 g-1 small">
+                        <div class="col-4"><span class="text-muted">胜</span> <span class="text-success fw-bold">@standing.Won</span></div>
+                        <div class="col-4"><span class="text-muted">平</span> <span class="text-warning fw-bold">@standing.Drawn</span></div>
+                        <div class="col-4"><span class="text-muted">负</span> <span class="text-danger fw-bold">@standing.Lost</span></div>
+                    </div>
+                    <div class="row text-center g-1 small mt-1">
+                        <div class="col-6"><span class="text-muted">进</span> @standing.GoalsFor - <span class="text-muted">失</span> @standing.GoalsAgainst</div>
+                        <div class="col-6"><span class="text-muted">净</span> <span class="@((standing.GoalDifference > 0) ? "text-success" : (standing.GoalDifference < 0) ? "text-danger" : "")">@standing.GoalDifference</span></div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="card shadow-lg d-none d-md-block">
+        <div class="card-header bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="h4 font-bold">常规赛积分榜</h2>
+                </div>
+                <div class="col-md-6 text-right">
+                    <span class="text-sm">更新时间：@DateTime.Now.ToShortDateString()</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="text-center w-12">排名</th>
+                            <th scope="col">球队</th>
+                            <th scope="col" class="text-center">赛</th>
+                            <th scope="col" class="text-center">胜</th>
+                            <th scope="col" class="text-center">平</th>
+                            <th scope="col" class="text-center">负</th>
+                            <th scope="col" class="text-center d-none d-lg-table-cell">进</th>
+                            <th scope="col" class="text-center d-none d-lg-table-cell">失</th>
+                            <th scope="col" class="text-center d-none d-md-table-cell">净</th>
+                            <th scope="col" class="text-center">积分</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var standing in standings)
+                        {
+                            <tr class="@(standing.Rank == 1 ? "table-warning" : "")">
+                                <td class="text-center align-middle">
+                                    @(standing.Rank == 1 ? "🥇" : standing.Rank == 2 ? "🥈" : standing.Rank == 3 ? "🥉" : standing.Rank.ToString())
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="w-8 h-8 rounded-circle d-flex align-items-center justify-content-center text-white text-sm font-bold me-3 flex-shrink-0"
+                                             style="background-color: @standing.Team.ColorPrimary;">
+                                            @standing.Team.ShortName[0]
+                                        </div>
+                                        <div>
+                                            <div class="font-bold" style="color: @standing.Team.ColorPrimary;">@standing.Team.Name</div>
+                                            <div class="text-xs text-muted d-none d-xl-block">@standing.Team.City</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">@standing.Played</td>
+                                <td class="text-center align-middle text-success fw-bold">@standing.Won</td>
+                                <td class="text-center align-middle text-warning fw-bold">@standing.Drawn</td>
+                                <td class="text-center align-middle text-danger fw-bold">@standing.Lost</td>
+                                <td class="text-center align-middle d-none d-lg-table-cell">@standing.GoalsFor</td>
+                                <td class="text-center align-middle d-none d-lg-table-cell">@standing.GoalsAgainst</td>
+                                <td class="text-center align-middle fw-bold d-none d-md-table-cell @(standing.GoalDifference > 0 ? "text-success" : standing.GoalDifference < 0 ? "text-danger" : "")">
+                                    @(standing.GoalDifference > 0 ? $"+{standing.GoalDifference}" : standing.GoalDifference.ToString())
+                                </td>
+                                <td class="text-center align-middle fw-bold fs-5 @(standing.Rank <= 3 ? "text-warning" : "")">@standing.Points</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-6 g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-gradient-to-r from-green-500 to-teal-500 text-white">
+                    <h3 class="h5 font-bold">🔥 进攻火力榜</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        @foreach (var stat in teamStats.OrderByDescending(s => s.GoalsScored).Take(5))
+                        {
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="w-6 h-6 rounded-circle d-flex align-items-center justify-content-center text-white text-xs font-bold me-2 flex-shrink-0"
+                                         style="background-color: @stat.Team.ColorPrimary;">
+                                        @stat.Team.ShortName[0]
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="font-medium small">@stat.Team.ShortName</span>
+                                            <span class="fw-bold text-success">@stat.GoalsScored</span>
+                                        </div>
+                                        <div class="progress" style="height: 4px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: @(stat.GoalsScored * 100.0 / teamStats.Max(s => s.GoalsScored))%; background-color: @stat.Team.ColorPrimary;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+                    <h3 class="h5 font-bold">🛡️ 防守稳固榜</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        @foreach (var stat in teamStats.OrderBy(s => s.GoalsConceded).Take(5))
+                        {
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="w-6 h-6 rounded-circle d-flex align-items-center justify-content-center text-white text-xs font-bold me-2 flex-shrink-0"
+                                         style="background-color: @stat.Team.ColorPrimary;">
+                                        @stat.Team.ShortName[0]
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="font-medium small">@stat.Team.ShortName</span>
+                                            <span class="fw-bold text-primary">@stat.GoalsConceded</span>
+                                        </div>
+                                        <div class="progress" style="height: 4px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: @((teamStats.Max(s => s.GoalsConceded) - stat.GoalsConceded + 1) * 100.0 / teamStats.Max(s => s.GoalsConceded)); background-color: @stat.Team.ColorPrimary;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Standing> standings = [];
+    private List<TeamStats> teamStats = [];
+
+    protected override void OnInitialized()
+    {
+        standings = LeagueService.GetStandings();
+        teamStats = LeagueService.GetTeamTeamStats();
+    }
+}

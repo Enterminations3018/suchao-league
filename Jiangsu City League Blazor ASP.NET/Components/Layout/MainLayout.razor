@@ -1,0 +1,48 @@
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+
+<div class="sidebar-overlay" @onclick="ToggleSidebar"></div>
+
+<div class="page">
+    <div class="sidebar @sidebarClass">
+        <NavMenu OnNavigate="CloseSidebar" />
+    </div>
+
+    <main>
+        <div class="top-row">
+            <button class="sidebar-toggler btn btn-link" @onclick="ToggleSidebar" title="菜单">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private bool sidebarOpen = false;
+
+    private string sidebarClass => sidebarOpen ? "open" : "";
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += (s, e) => CloseSidebar();
+    }
+
+    private void ToggleSidebar()
+    {
+        sidebarOpen = !sidebarOpen;
+    }
+
+    private void CloseSidebar()
+    {
+        sidebarOpen = false;
+    }
+}
