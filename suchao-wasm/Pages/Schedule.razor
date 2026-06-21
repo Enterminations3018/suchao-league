@@ -1,0 +1,169 @@
+@page "/schedule"
+@inject LeagueService LeagueService
+
+<PageTitle>苏超联赛 - 赛程</PageTitle>
+
+<div class="container mt-6">
+    <h1 class="display-4 font-bold text-center mb-6">⚽ 2026苏超赛程</h1>
+    
+    <div class="card mb-6">
+        <div class="card-header bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <h2 class="h4 font-bold">筛选赛程</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <select class="form-select" @bind="selectedTeam">
+                        <option value="0">全部球队</option>
+                        @foreach (var team in teams)
+                        {
+                            <option value="@team.Id">@team.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" @bind="selectedStatus">
+                        <option value="all">全部状态</option>
+                        <option value="upcoming">即将开赛</option>
+                        <option value="completed">已结束</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" @bind="selectedRound">
+                        <option value="0">全部轮次</option>
+                        @for (int i = 1; i <= 11; i++)
+                        {
+                            <option value="@i">第@i轮</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-gradient-to-r from-orange-500 to-red-500 text-white">
+            <h2 class="h4 font-bold">赛程表</h2>
+        </div>
+        <div class="card-body">
+            @if (filteredMatches.Any())
+            {
+                <div class="space-y-4">
+                    @foreach (var group in filteredMatches.GroupBy(m => m.Date).OrderBy(g => g.Key))
+                    {
+                        <div class="border rounded-lg">
+                            <div class="bg-gray-100 px-4 py-2 border-bottom">
+                                <div class="font-bold">📅 @group.Key.ToLongDateString()</div>
+                            </div>
+                            <div class="p-4">
+                                <div class="row row-cols-1 row-cols-md-2 gap-4">
+                                    @foreach (var match in group)
+                                    {
+                                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between bg-white p-3 rounded-lg shadow-sm gap-2">
+                                            <div class="text-center flex-1">
+                                                <div class="font-bold" style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</div>
+                                                <div class="text-xs text-muted d-none d-md-block">主场</div>
+                                            </div>
+                                            <div class="text-center flex-1">
+                                                @if (match.Status == MatchStatus.Completed)
+                                                {
+                                                    <div class="text-3xl font-bold">
+                                                        <span class="text-green-600">@match.HomeScore</span>
+                                                        <span class="text-gray-400 mx-2">-</span>
+                                                        <span class="text-red-600">@match.AwayScore</span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="text-2xl font-bold text-gray-500">VS</div>
+                                                    <div class="text-sm text-muted mt-1">@match.Time</div>
+                                                }
+                                                <div class="text-xs text-muted mt-1">第@match.Round轮</div>
+                                            </div>
+                                            <div class="text-center flex-1">
+                                                <div class="font-bold" style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</div>
+                                                <div class="text-xs text-muted d-none d-md-block">客场</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-10 text-muted">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <div>没有找到匹配的赛程</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card mt-6">
+        <div class="card-header bg-gradient-to-r from-green-500 to-teal-500 text-white">
+            <h2 class="h4 font-bold">近期比赛结果</h2>
+        </div>
+        <div class="card-body">
+            @if (completedMatches.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>主队</th>
+                                <th>比分</th>
+                                <th>客队</th>
+                                <th>轮次</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var match in completedMatches.Take(10))
+                            {
+                                <tr>
+                                    <td>@match.Date.ToShortDateString()</td>
+                                    <td style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</td>
+                                    <td>
+                                        <span class="font-bold text-green-600">@match.HomeScore</span>
+                                        <span class="mx-1">-</span>
+                                        <span class="font-bold text-red-600">@match.AwayScore</span>
+                                    </td>
+                                    <td style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</td>
+                                    <td>第@match.Round轮</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Team> teams = [];
+    private List<Match> allMatches = [];
+    private List<Match> completedMatches = [];
+    private int selectedTeam = 0;
+    private string selectedStatus = "all";
+    private int selectedRound = 0;
+
+    private List<Match> filteredMatches => allMatches
+        .Where(m => 
+            (selectedTeam == 0 || m.HomeTeam.Id == selectedTeam || m.AwayTeam.Id == selectedTeam) &&
+            (selectedStatus == "all" || 
+             (selectedStatus == "upcoming" && m.Status == MatchStatus.Upcoming) ||
+             (selectedStatus == "completed" && m.Status == MatchStatus.Completed)) &&
+            (selectedRound == 0 || m.Round == selectedRound))
+        .ToList();
+
+    protected override void OnInitialized()
+    {
+        teams = LeagueService.GetAllTeams();
+        allMatches = LeagueService.GetAllMatches();
+        completedMatches = LeagueService.GetCompletedMatches();
+    }
+}

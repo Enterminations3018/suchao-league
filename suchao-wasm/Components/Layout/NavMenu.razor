@@ -1,0 +1,53 @@
+<div class="top-row px-4 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">⚽ 苏超联赛</a>
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                🏠 首页
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="teams">
+                🏟️ 球队
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="standings">
+                📊 积分榜
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="schedule">
+                ⚽ 赛程
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stats">
+                📈 数据分析
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

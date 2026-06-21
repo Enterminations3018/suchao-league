@@ -1,0 +1,180 @@
+@page "/stats"
+@inject LeagueService LeagueService
+@using SuchaoLeagueWasm.Models
+
+<PageTitle>苏超联赛 - 数据分析</PageTitle>
+
+<div class="container mt-6">
+    <h1 class="display-4 font-bold text-center mb-6">📈 赛事数据分析</h1>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-6">
+                <div class="card-header bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                    <h2 class="h4 font-bold">🥇 射手榜</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>球员</th>
+                                    <th>球队</th>
+                                    <th>位置</th>
+                                    <th>进球</th>
+                                    <th>助攻</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var scorer in topScorers)
+                                {
+                                    <tr class="@(topScorers.IndexOf(scorer) == 0 ? "table-warning" : "")">
+                                        <td>
+                                            @if (topScorers.IndexOf(scorer) == 0) { <span>🥇</span> }
+                                            else if (topScorers.IndexOf(scorer) == 1) { <span>🥈</span> }
+                                            else if (topScorers.IndexOf(scorer) == 2) { <span>🥉</span> }
+                                            else { @(topScorers.IndexOf(scorer) + 1) }
+                                        </td>
+                                        <td class="font-bold">@scorer.Player.Name</td>
+                                        <td>
+                                            <span class="badge" style="background-color: @scorer.Team.ColorPrimary; color: white;">@scorer.Team.ShortName</span>
+                                        </td>
+                                        <td>@scorer.Player.Position</td>
+                                        <td class="font-bold text-green-600">@scorer.Goals</td>
+                                        <td class="font-bold text-blue-600">@scorer.Assists</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card mb-6">
+                <div class="card-header bg-gradient-to-r from-red-500 to-pink-500 text-white">
+                    <h2 class="h4 font-bold">📊 球队攻防统计</h2>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-4">
+                        @foreach (var stat in teamStats.OrderByDescending(s => s.GoalsScored).Take(5))
+                        {
+                            <div class="border rounded-lg p-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 rounded-full d-flex align-items-center justify-content-center text-white text-sm font-bold mr-2"
+                                             style="background-color: @stat.Team.ColorPrimary;">
+                                            @stat.Team.ShortName[0]
+                                        </div>
+                                        <span class="font-bold">@stat.Team.Name</span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="text-green-600 font-bold">@stat.GoalsScored</span>
+                                        <span class="text-gray-400"> / </span>
+                                        <span class="text-red-600 font-bold">@stat.GoalsConceded</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-xs text-muted">控球率</div>
+                                        <div class="text-sm font-bold">@stat.PossessionRate%</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-xs text-muted">零封场次</div>
+                                        <div class="text-sm font-bold">@stat.CleanSheets</div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="text-xs text-muted">射正次数</div>
+                                        <div class="text-sm font-bold">@stat.ShotsOnTarget</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-xs text-muted">黄牌/红牌</div>
+                                        <div class="text-sm font-bold">@stat.YellowCards / @stat.RedCards</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+            <h2 class="h4 font-bold">🏆 赛事数据总览</h2>
+        </div>
+        <div class="card-body">
+            <div class="row text-center g-3">
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-green-400 to-green-600 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@totalGoals</div>
+                        <div class="text-sm mt-1">总进球数</div>
+                        <div class="text-xs mt-1 opacity-80">场均 @avgGoalsPerMatch.ToString("F1") 球</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-blue-400 to-blue-600 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@cleanSheetsCount</div>
+                        <div class="text-sm mt-1">零封场次</div>
+                        <div class="text-xs mt-1 opacity-80">占比 @cleanSheetRate.ToString("F1")%</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-purple-400 to-purple-600 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@avgPossession.ToString("F1")%</div>
+                        <div class="text-sm mt-1">平均控球率</div>
+                        <div class="text-xs mt-1 opacity-80">攻守兼备</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-yellow-400 to-orange-500 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@yellowCardsTotal</div>
+                        <div class="text-sm mt-1">黄牌总数</div>
+                        <div class="text-xs mt-1 opacity-80">纪律统计</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-red-400 to-red-600 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@redCardsTotal</div>
+                        <div class="text-sm mt-1">红牌总数</div>
+                        <div class="text-xs mt-1 opacity-80">严重犯规</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card bg-gradient-to-br from-teal-400 to-teal-600 text-white p-4 rounded-lg">
+                        <div class="text-4xl font-bold">@completedMatchesCount</div>
+                        <div class="text-sm mt-1">已完赛场次</div>
+                        <div class="text-xs mt-1 opacity-80">常规赛进度</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<TopScorer> topScorers = [];
+    private List<TeamStats> teamStats = [];
+    private List<Match> completedMatches = [];
+
+    private int totalGoals => teamStats.Sum(s => s.GoalsScored);
+    private int completedMatchesCount => completedMatches.Count;
+    private double avgGoalsPerMatch => completedMatchesCount > 0 ? (double)totalGoals / completedMatchesCount : 0;
+    private int cleanSheetsCount => teamStats.Sum(s => s.CleanSheets);
+    private double cleanSheetRate => completedMatchesCount > 0 ? (double)cleanSheetsCount / (completedMatchesCount * 2) * 100 : 0;
+    private double avgPossession => teamStats.Any() ? teamStats.Average(s => s.PossessionRate) : 0;
+    private int yellowCardsTotal => teamStats.Sum(s => s.YellowCards);
+    private int redCardsTotal => teamStats.Sum(s => s.RedCards);
+
+    protected override void OnInitialized()
+    {
+        topScorers = LeagueService.GetTopScorers();
+        teamStats = LeagueService.GetTeamTeamStats();
+        completedMatches = LeagueService.GetCompletedMatches();
+    }
+}

@@ -1,0 +1,65 @@
+@page "/teams"
+@inject LeagueService LeagueService
+
+<PageTitle>苏超联赛 - 球队</PageTitle>
+
+<div class="container mt-6">
+    <h1 class="display-4 font-bold text-center mb-8">🏟️ 13支球队巡礼</h1>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+        @foreach (var team in teams)
+        {
+            <div class="col mb-4 d-flex">
+                <div class="card w-100 hover:shadow-lg transition-shadow overflow-hidden">
+                    <div class="card-header py-3 text-center" style="background: linear-gradient(135deg, @team.ColorPrimary 0%, @team.ColorSecondary 100%);">
+                        <h3 class="h5 font-bold text-white">@team.Name</h3>
+                        <p class="text-xs text-white/80">主教练：@team.Coach</p>
+                    </div>
+                    <div class="card-body" style="background-color: @GetLightColor(team.ColorPrimary);">
+                        <p class="text-xs text-muted mb-3">主场：@team.HomeStadium (@team.Capacity.ToString("N0")人)</p>
+                        
+                        <p class="text-sm text-muted mb-4">@team.Description</p>
+                        
+                        <div class="mb-4">
+                            <div class="text-xs font-bold text-gray-600 mb-2">战术风格</div>
+                            <div class="text-sm">@team.Tactics</div>
+                            <div class="text-xs text-muted mt-1">阵型：@team.Formation</div>
+                        </div>
+                        
+                        <div>
+                            <div class="text-xs font-bold text-gray-600 mb-2">核心球员</div>
+                            <div class="space-y-2">
+                                @foreach (var player in team.KeyPlayers)
+                                {
+                                    <div class="flex items-center text-sm">
+                                        <span class="w-6 h-6 rounded bg-gray-200 text-center text-xs font-bold mr-2">@player.JerseyNumber</span>
+                                        <span class="font-medium">@player.Name</span>
+                                        <span class="text-xs text-muted ml-auto">@player.Position</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Team> teams = [];
+
+    protected override void OnInitialized()
+    {
+        teams = LeagueService.GetAllTeams();
+    }
+
+    private string GetLightColor(string hexColor)
+    {
+        if (!hexColor.StartsWith("#")) hexColor = "#" + hexColor;
+        var r = int.Parse(hexColor.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
+        var g = int.Parse(hexColor.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
+        var b = int.Parse(hexColor.Substring(5, 2), System.Globalization.NumberStyles.HexNumber);
+        return $"rgba({r}, {g}, {b}, 0.06)";
+    }
+}
