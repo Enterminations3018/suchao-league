@@ -36,6 +36,14 @@ jobs:
       - name: Publish
         run: dotnet publish suchao-wasm/SuchaoLeagueWasm.csproj --configuration Release --no-build --output ./publish
 
+      - name: Fix blazor.webassembly.js reference
+        run: |
+          cd ./publish/wwwroot/_framework
+          WASM_FILE=$(ls blazor.webassembly.*.js | head -n 1)
+          if [ -n "$WASM_FILE" ]; then
+            cp "$WASM_FILE" blazor.webassembly.js
+          fi
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
