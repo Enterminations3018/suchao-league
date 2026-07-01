@@ -21,12 +21,22 @@
         </div>
     </div>
 
-    <div id="blazor-error-ui">
+    <div id="blazor-error-ui" style="display: none;">
         发生了未处理的错误。
         <a href="." class="reload">重新加载</a>
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        window.addEventListener('error', function(e) {
+            var errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) errorUi.style.display = 'block';
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+            var errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) errorUi.style.display = 'block';
+        });
+    </script>
 </body>
 
 </html>

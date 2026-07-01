@@ -3,21 +3,24 @@
 
 <PageTitle>苏超联赛 - 赛程</PageTitle>
 
-<div class="container mt-6">
-    <h1 class="display-4 font-bold text-center mb-6">⚽ 2026苏超赛程</h1>
-    
-    <div class="card mb-6">
-        <div class="card-header bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            <h2 class="h4 font-bold">筛选赛程</h2>
+<div class="container mt-4">
+    <h1 class="display-4 text-center mb-5 fw-bold">⚽ 2026苏超赛程</h1>
+
+    <div class="card mb-5">
+        <div class="card-header text-white" style="background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);">
+            <h2 class="h4 fw-bold mb-0">筛选赛程</h2>
         </div>
         <div class="card-body">
-            <div class="row">
+            <div class="row g-3">
                 <div class="col-md-4">
                     <select class="form-select" @bind="selectedTeam">
                         <option value="0">全部球队</option>
-                        @foreach (var team in teams)
+                        @if (teams != null)
                         {
-                            <option value="@team.Id">@team.Name</option>
+                            @foreach (var team in teams)
+                            {
+                                <option value="@team.Id">@team.Name</option>
+                            }
                         }
                     </select>
                 </div>
@@ -41,48 +44,48 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header bg-gradient-to-r from-orange-500 to-red-500 text-white">
-            <h2 class="h4 font-bold">赛程表</h2>
+    <div class="card mb-5">
+        <div class="card-header text-white" style="background: linear-gradient(90deg, #f97316 0%, #ef4444 100%);">
+            <h2 class="h4 fw-bold mb-0">赛程表</h2>
         </div>
         <div class="card-body">
-            @if (filteredMatches.Any())
+            @if (filteredMatches != null && filteredMatches.Any())
             {
-                <div class="space-y-4">
+                <div class="d-flex flex-column gap-4">
                     @foreach (var group in filteredMatches.GroupBy(m => m.Date).OrderBy(g => g.Key))
                     {
-                        <div class="border rounded-lg">
-                            <div class="bg-gray-100 px-4 py-2 border-bottom">
-                                <div class="font-bold">📅 @group.Key.ToLongDateString()</div>
+                        <div class="border rounded">
+                            <div class="bg-light px-4 py-2 border-bottom">
+                                <div class="fw-bold">📅 @group.Key.ToLongDateString()</div>
                             </div>
                             <div class="p-4">
-                                <div class="row row-cols-1 row-cols-md-2 gap-4">
+                                <div class="row row-cols-1 row-cols-md-2 g-4">
                                     @foreach (var match in group)
                                     {
-                                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between bg-white p-3 rounded-lg shadow-sm gap-2">
-                                            <div class="text-center flex-1">
-                                                <div class="font-bold" style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</div>
-                                                <div class="text-xs text-muted d-none d-md-block">主场</div>
+                                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between bg-white p-3 rounded gap-2 border">
+                                            <div class="text-center flex-1 w-100">
+                                                <div class="fw-bold" style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</div>
+                                                <div class="small text-muted d-none d-md-block">主场</div>
                                             </div>
-                                            <div class="text-center flex-1">
+                                            <div class="text-center flex-1 w-100">
                                                 @if (match.Status == MatchStatus.Completed)
                                                 {
-                                                    <div class="text-3xl font-bold">
-                                                        <span class="text-green-600">@match.HomeScore</span>
-                                                        <span class="text-gray-400 mx-2">-</span>
-                                                        <span class="text-red-600">@match.AwayScore</span>
+                                                    <div class="fw-bold" style="font-size: 2rem;">
+                                                        <span class="text-success">@match.HomeScore</span>
+                                                        <span class="text-muted mx-2">-</span>
+                                                        <span class="text-danger">@match.AwayScore</span>
                                                     </div>
                                                 }
                                                 else
                                                 {
-                                                    <div class="text-2xl font-bold text-gray-500">VS</div>
-                                                    <div class="text-sm text-muted mt-1">@match.Time</div>
+                                                    <div class="fw-bold text-muted" style="font-size: 1.5rem;">VS</div>
+                                                    <div class="small text-muted mt-1">@match.Time</div>
                                                 }
-                                                <div class="text-xs text-muted mt-1">第@match.Round轮</div>
+                                                <div class="small text-muted mt-1">第@match.Round轮</div>
                                             </div>
-                                            <div class="text-center flex-1">
-                                                <div class="font-bold" style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</div>
-                                                <div class="text-xs text-muted d-none d-md-block">客场</div>
+                                            <div class="text-center flex-1 w-100">
+                                                <div class="fw-bold" style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</div>
+                                                <div class="small text-muted d-none d-md-block">客场</div>
                                             </div>
                                         </div>
                                     }
@@ -94,23 +97,23 @@
             }
             else
             {
-                <div class="text-center py-10 text-muted">
-                    <div class="text-4xl mb-3">🔍</div>
+                <div class="text-center py-5 text-muted">
+                    <div style="font-size: 2.5rem;" class="mb-3">🔍</div>
                     <div>没有找到匹配的赛程</div>
                 </div>
             }
         </div>
     </div>
 
-    <div class="card mt-6">
-        <div class="card-header bg-gradient-to-r from-green-500 to-teal-500 text-white">
-            <h2 class="h4 font-bold">近期比赛结果</h2>
+    <div class="card">
+        <div class="card-header text-white" style="background: linear-gradient(90deg, #22c55e 0%, #14b8a6 100%);">
+            <h2 class="h4 fw-bold mb-0">近期比赛结果</h2>
         </div>
         <div class="card-body">
-            @if (completedMatches.Any())
+            @if (completedMatches != null && completedMatches.Any())
             {
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped mb-0">
                         <thead>
                             <tr>
                                 <th>日期</th>
@@ -127,9 +130,9 @@
                                     <td>@match.Date.ToShortDateString()</td>
                                     <td style="color: @match.HomeTeam.ColorPrimary;">@match.HomeTeam.ShortName</td>
                                     <td>
-                                        <span class="font-bold text-green-600">@match.HomeScore</span>
+                                        <span class="fw-bold text-success">@match.HomeScore</span>
                                         <span class="mx-1">-</span>
-                                        <span class="font-bold text-red-600">@match.AwayScore</span>
+                                        <span class="fw-bold text-danger">@match.AwayScore</span>
                                     </td>
                                     <td style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</td>
                                     <td>第@match.Round轮</td>
@@ -138,6 +141,10 @@
                         </tbody>
                     </table>
                 </div>
+            }
+            else
+            {
+                <p class="text-center text-muted mb-0">暂无比赛结果</p>
             }
         </div>
     </div>
@@ -151,19 +158,35 @@
     private string selectedStatus = "all";
     private int selectedRound = 0;
 
-    private List<Match> filteredMatches => allMatches
-        .Where(m => 
-            (selectedTeam == 0 || m.HomeTeam.Id == selectedTeam || m.AwayTeam.Id == selectedTeam) &&
-            (selectedStatus == "all" || 
-             (selectedStatus == "upcoming" && m.Status == MatchStatus.Upcoming) ||
-             (selectedStatus == "completed" && m.Status == MatchStatus.Completed)) &&
-            (selectedRound == 0 || m.Round == selectedRound))
-        .ToList();
+    private List<Match> filteredMatches
+    {
+        get
+        {
+            if (allMatches == null || !allMatches.Any()) return [];
+            return allMatches
+                .Where(m =>
+                    (selectedTeam == 0 || m.HomeTeam.Id == selectedTeam || m.AwayTeam.Id == selectedTeam) &&
+                    (selectedStatus == "all" ||
+                     (selectedStatus == "upcoming" && m.Status == MatchStatus.Upcoming) ||
+                     (selectedStatus == "completed" && m.Status == MatchStatus.Completed)) &&
+                    (selectedRound == 0 || m.Round == selectedRound))
+                .ToList();
+        }
+    }
 
     protected override void OnInitialized()
     {
-        teams = LeagueService.GetAllTeams();
-        allMatches = LeagueService.GetAllMatches();
-        completedMatches = LeagueService.GetCompletedMatches();
+        try
+        {
+            teams = LeagueService.GetAllTeams() ?? [];
+            allMatches = LeagueService.GetAllMatches() ?? [];
+            completedMatches = LeagueService.GetCompletedMatches() ?? [];
+        }
+        catch
+        {
+            teams = [];
+            allMatches = [];
+            completedMatches = [];
+        }
     }
 }
