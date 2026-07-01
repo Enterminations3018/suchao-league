@@ -33,7 +33,7 @@
                         <option value="0">全部轮次</option>
                         @for (int i = 1; i <= 11; i++)
                         {
-                            <option value="@i">第@i轮</option>
+                            <option value="@i">第@(i)轮</option>
                         }
                     </select>
                 </div>
@@ -78,7 +78,7 @@
                                                     <div class="text-2xl font-bold text-gray-500">VS</div>
                                                     <div class="text-sm text-muted mt-1">@match.Time</div>
                                                 }
-                                                <div class="text-xs text-muted mt-1">第@match.Round轮</div>
+                                                <div class="text-xs text-muted mt-1">第@(match.Round)轮</div>
                                             </div>
                                             <div class="text-center flex-1">
                                                 <div class="font-bold" style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</div>
@@ -132,7 +132,7 @@
                                         <span class="font-bold text-red-600">@match.AwayScore</span>
                                     </td>
                                     <td style="color: @match.AwayTeam.ColorPrimary;">@match.AwayTeam.ShortName</td>
-                                    <td>第@match.Round轮</td>
+                                    <td>第@(match.Round)轮</td>
                                 </tr>
                             }
                         </tbody>
