@@ -168,7 +168,7 @@ public class LeagueService
             FoundedYear = 2025,
             HomeStadium = "无锡体育中心",
             Capacity = 28000,
-            Description = "目前唯一不败球队，防守铁军，积分榜稳居次席",
+            Description = "防守铁军，R9客场绝杀徐州稳居积分榜次席，R8客场0-2不敌南京遭遇赛季首败",
             KeyPlayers =
             [
                 new Player { Id = 301, Name = "谢志伟", Position = "中卫", JerseyNumber = 4, Age = 26, Description = "后场定海神针，角球进攻利器" },
@@ -559,15 +559,15 @@ public class LeagueService
             new TeamStats { Team = teams[0], GoalsScored = 4, GoalsConceded = 3, CleanSheets = 2, YellowCards = 5, RedCards = 0, PossessionRate = 52.3, ShotsOnTarget = 18 },
             new TeamStats { Team = teams[1], GoalsScored = 5, GoalsConceded = 4, CleanSheets = 1, YellowCards = 6, RedCards = 0, PossessionRate = 54.1, ShotsOnTarget = 22 },
             new TeamStats { Team = teams[2], GoalsScored = 7, GoalsConceded = 4, CleanSheets = 2, YellowCards = 7, RedCards = 0, PossessionRate = 48.6, ShotsOnTarget = 24 },
-            new TeamStats { Team = teams[3], GoalsScored = 7, GoalsConceded = 4, CleanSheets = 1, YellowCards = 8, RedCards = 0, PossessionRate = 51.2, ShotsOnTarget = 26 },
+            new TeamStats { Team = teams[3], GoalsScored = 7, GoalsConceded = 4, CleanSheets = 2, YellowCards = 8, RedCards = 0, PossessionRate = 51.2, ShotsOnTarget = 26 },
             new TeamStats { Team = teams[4], GoalsScored = 2, GoalsConceded = 5, CleanSheets = 2, YellowCards = 6, RedCards = 0, PossessionRate = 44.3, ShotsOnTarget = 14 },
-            new TeamStats { Team = teams[5], GoalsScored = 7, GoalsConceded = 4, CleanSheets = 1, YellowCards = 9, RedCards = 0, PossessionRate = 49.8, ShotsOnTarget = 28 },
+            new TeamStats { Team = teams[5], GoalsScored = 7, GoalsConceded = 4, CleanSheets = 2, YellowCards = 9, RedCards = 0, PossessionRate = 49.8, ShotsOnTarget = 28 },
             new TeamStats { Team = teams[6], GoalsScored = 7, GoalsConceded = 1, CleanSheets = 4, YellowCards = 3, RedCards = 0, PossessionRate = 58.2, ShotsOnTarget = 32 },
             new TeamStats { Team = teams[7], GoalsScored = 3, GoalsConceded = 6, CleanSheets = 1, YellowCards = 7, RedCards = 0, PossessionRate = 41.5, ShotsOnTarget = 16 },
             new TeamStats { Team = teams[8], GoalsScored = 2, GoalsConceded = 11, CleanSheets = 0, YellowCards = 10, RedCards = 0, PossessionRate = 38.2, ShotsOnTarget = 12 },
             new TeamStats { Team = teams[9], GoalsScored = 6, GoalsConceded = 9, CleanSheets = 1, YellowCards = 8, RedCards = 1, PossessionRate = 47.1, ShotsOnTarget = 24 },
-            new TeamStats { Team = teams[10], GoalsScored = 4, GoalsConceded = 3, CleanSheets = 2, YellowCards = 5, RedCards = 0, PossessionRate = 45.6, ShotsOnTarget = 20 },
-            new TeamStats { Team = teams[11], GoalsScored = 3, GoalsConceded = 7, CleanSheets = 0, YellowCards = 6, RedCards = 0, PossessionRate = 39.8, ShotsOnTarget = 14 },
+            new TeamStats { Team = teams[10], GoalsScored = 4, GoalsConceded = 3, CleanSheets = 1, YellowCards = 5, RedCards = 0, PossessionRate = 45.6, ShotsOnTarget = 20 },
+            new TeamStats { Team = teams[11], GoalsScored = 3, GoalsConceded = 7, CleanSheets = 1, YellowCards = 6, RedCards = 0, PossessionRate = 39.8, ShotsOnTarget = 14 },
             new TeamStats { Team = teams[12], GoalsScored = 8, GoalsConceded = 4, CleanSheets = 2, YellowCards = 7, RedCards = 0, PossessionRate = 50.3, ShotsOnTarget = 26 }
         ];
     }
